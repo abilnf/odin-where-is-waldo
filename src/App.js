@@ -1,22 +1,37 @@
 import "./App.css";
 
-import { initializeApp } from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDOSDuweiGasQcUuaO2N8bSdC02-QVUxtk",
-  authDomain: "abilnf-odin-where-is-waldo.firebaseapp.com",
-  projectId: "abilnf-odin-where-is-waldo",
-  storageBucket: "abilnf-odin-where-is-waldo.appspot.com",
-  messagingSenderId: "102810098472",
-  appId: "1:102810098472:web:0794e726ab02bf3aa1ce1d",
-};
-
-const app = initializeApp(firebaseConfig);
+import Navbar from "./components/Navbar";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import Levels from "./pages/Levels";
+import Play from "./pages/Play";
+import { useState } from "react";
 
 function App() {
-  return <div className="App"></div>;
+  const [level, setLevel] = useState(null);
+
+  const navigate = useNavigate();
+
+  return (
+    <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/">
+            <Route
+              index
+              element={
+                <Levels
+                  selectLevel={(selected) => {
+                    setLevel(selected);
+                    navigate(`/play/${selected}`);
+                  }}
+                />
+              }
+            />
+            <Route path="play/:levelId" element={<Play />} />
+          </Route>
+        </Routes>
+    </div>
+  );
 }
 
 export default App;
