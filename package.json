@@ -7,7 +7,9 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "firebase": "^9.6.6",
+    "nanoid": "^3.2.0",
     "react": "^17.0.2",
+    "react-cookie": "^4.1.1",
     "react-dom": "^17.0.2",
     "react-firebase-hooks": "^5.0.2",
     "react-router-dom": "^6.2.1",
@@ -20,7 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "emulator": "firebase emulators:start --only storage,firestore,auth --import=./firebase_emulator_storage --export-on-exit"
+    "emulator": "firebase emulators:start --only storage,firestore,auth --import=./firebase_emulator_storage --export-on-exit",
+    "emulator-all": "firebase emulators:start --only storage,firestore,auth,functions --import=./firebase_emulator_storage --export-on-exit"
   },
   "eslintConfig": {
     "extends": [

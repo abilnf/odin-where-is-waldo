@@ -5,25 +5,53 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-exports.startSession = functions.firestore
-  .document("/sessions/{userId}")
-  .onCreate((snap, context) => {
-    const data = snap.data();
-
-    const level = data.level;
-
-    return snap.ref.set(
-      { image: `where_is_waldo_${level}.png`, startTime: new Date() },
-      { merge: true }
-    );
-  });
-
 exports.giveFeedback = functions.firestore
   .document("/sessions/{userId}")
-  .onUpdate((snap, context) => {
+  .onWrite((change, context) => {
+    const snap = change.after;
     const data = snap.data();
-
+    if (!data) return;
     const level = data.level;
+    if (!level) return;
+
+    functions.logger.log("update");
+    if (!data.image) {
+      functions.logger.log("setting image paths");
+      admin
+        .firestore()
+        .collection("levels")
+        .doc(level)
+        .collection("pokemon")
+        .get()
+        .then((pokemon) =>
+          admin
+            .firestore()
+            .collection("levels")
+            .doc(level)
+            .collection("private")
+            .doc("data")
+            .get()
+            .then((dataDoc) =>
+              snap.ref.set(
+                {
+                  image: dataDoc.data().image,
+                  pokemon: pokemon.docs.map((doc) => ({
+                    image: doc.data().image,
+                    id: doc.id,
+                  })),
+                },
+                { merge: true }
+              )
+            )
+        )
+        .then(() =>
+          snap.ref
+            .collection("private")
+            .doc("data")
+            .set({ start: admin.firestore.FieldValue.serverTimestamp() })
+        );
+    }
+
     const guess = data.guess;
 
     if (guess) {
@@ -34,21 +62,79 @@ exports.giveFeedback = functions.firestore
         .firestore()
         .collection("levels")
         .doc(level)
-        .collection("private")
-        .doc("position")
+        .collection("pokemon")
+        .doc(guess[2])
         .get()
         .then((positionDoc) => {
           const position = positionDoc.data();
-          const correctX = position.x;
-          const correctY = position.y;
 
-          console.log({ x, y });
-          console.log({ correctX, correctY });
+          const correct =
+            x >= position.xmin &&
+            x <= position.xmax &&
+            y >= position.ymin &&
+            y <= position.ymax;
 
-          return snap.after.ref.update({
-            guess: admin.firestore.FieldValue.delete(),
-            feedback: true,
-          });
+          return snap.ref
+            .update({
+              guess: admin.firestore.FieldValue.delete(),
+              feedback: correct,
+            })
+            .then(() => {
+              if (correct) {
+                return snap.ref
+                  .collection("private")
+                  .doc("data")
+                  .get()
+                  .then((privateData) => {
+                    const found = privateData.data().found || [];
+                    if (!found.includes(guess[2])) {
+                      found.push(guess[2]);
+                      const obj = { found };
+                      if (found.length === data.pokemon.length) {
+                        obj.end = admin.firestore.FieldValue.serverTimestamp();
+                      }
+                      return snap.ref
+                        .collection("private")
+                        .doc("data")
+                        .set(obj, { merge: true });
+                    }
+                  });
+              }
+            });
+        });
+    }
+
+    if (data.name) {
+      return snap.ref
+        .collection("private")
+        .doc("data")
+        .get()
+        .then((privateDoc) => {
+          const privateData = privateDoc.data();
+          const start = privateData.start;
+          const end = privateData.end;
+          const time = end.toMillis() - start.toMillis();
+          return admin
+            .firestore()
+            .collection("leaderboard")
+            .doc(context.params.userId)
+            .get()
+            .then((userDoc) => {
+              const userData = userDoc.data() || { times: {} };
+              if (!userData.times[level] || time < userData.times[level]) {
+                userData.times[level] = time;
+                userData.name = data.name;
+                if (data.avatar) {
+                  userData.avatar = data.avatar;
+                }
+                return admin
+                  .firestore()
+                  .collection("leaderboard")
+                  .doc(context.params.userId)
+                  .set(userData);
+              }
+            })
+            .then(() => snap.ref.delete());
         });
     }
   });
