@@ -133,7 +133,7 @@ const NameRow = styled.div`
 //   align-items: center;
 // `;
 
-function Play() {
+function Play(props) {
   const params = useParams();
 
   const [user, userLoading] = useAuthState(auth);
@@ -160,6 +160,8 @@ function Play() {
   const [session, loading, error] = useDocumentData(
     doc(db, "sessions", userID)
   );
+
+  // console.log(session);
 
   const [images, setImages] = useState();
   const [currentGuess, setCurrentGuess] = useState(null);
@@ -279,13 +281,13 @@ function Play() {
     }
   }
 
-  if (userLoading) {
+  if (userLoading || !images) {
     return <Heading>Loading...</Heading>;
   }
 
   return (
     <div>
-      <Heading>Level {params.levelId}</Heading>
+      <Heading>{props.levelName}</Heading>
       {images && (
         <Container>
           <Objective>

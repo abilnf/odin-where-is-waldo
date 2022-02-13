@@ -55,7 +55,7 @@ function Levels(props) {
             key={level.id}
             name={level.data().name}
             preview={previewURLs[index]}
-            onClick={() => props.selectLevel(level.id)}
+            onClick={() => props.selectLevel(level.id, level.data().name)}
           />
         ))}
     </Layout>

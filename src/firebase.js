@@ -7,7 +7,7 @@ import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDOSDuweiGasQcUuaO2N8bSdC02-QVUxtk",
+  apiKey: "AIzaSyAeipwV6TlrIN3buzwxH0yW4epX-XgXIpE",
   authDomain: "abilnf-odin-where-is-waldo.firebaseapp.com",
   projectId: "abilnf-odin-where-is-waldo",
   storageBucket: "abilnf-odin-where-is-waldo.appspot.com",
@@ -20,8 +20,8 @@ const auth = getAuth();
 const db = getFirestore();
 const storage = getStorage();
 
-connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
-connectFirestoreEmulator(db, "localhost", 8080);
-connectStorageEmulator(storage, "localhost", 9199);
+// connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+// connectFirestoreEmulator(db, "localhost", 8080);
+// connectStorageEmulator(storage, "localhost", 9199);
 
 export { app, auth, storage, db };

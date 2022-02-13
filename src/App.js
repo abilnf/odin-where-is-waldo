@@ -8,7 +8,7 @@ import { useState } from "react";
 import Leaderboard from "./pages/Leaderboard";
 
 function App() {
-  const [level, setLevel] = useState(null);
+  const [levelName, setLevelName] = useState(null);
 
   const navigate = useNavigate();
 
@@ -21,14 +21,17 @@ function App() {
             index
             element={
               <Levels
-                selectLevel={(selected) => {
-                  setLevel(selected);
+                selectLevel={(selected, name) => {
+                  setLevelName(name);
                   navigate(`/play/${selected}`);
                 }}
               />
             }
           />
-          <Route path="play/:levelId" element={<Play />} />
+          <Route
+            path="play/:levelId"
+            element={<Play levelName={levelName} />}
+          />
           <Route path="leaderboard" element={<Leaderboard />} />
         </Route>
       </Routes>
