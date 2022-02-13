@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.083200ef.css","mappings":"AAAA,iBAGE,qBACF,CAEA,KACE,6BACF,CAEA,KAEE,qBAAsB,CADtB,QAEF","sources":["App.css"],"sourcesContent":["*,\n*::after,\n*::before {\n  box-sizing: border-box;\n}\n\nhtml {\n  font-family: Roboto, sans-serif;\n}\n\nbody {\n  margin: 0;\n  background-color: #222;\n}\n"],"names":[],"sourceRoot":""}
