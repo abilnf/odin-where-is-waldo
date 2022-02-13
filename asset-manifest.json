@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.083200ef.css",
-    "main.js": "/static/js/main.ef5e54dc.js",
-    "index.html": "/index.html",
-    "main.083200ef.css.map": "/static/css/main.083200ef.css.map",
-    "main.ef5e54dc.js.map": "/static/js/main.ef5e54dc.js.map"
+    "main.css": "/odin-where-is-waldo/static/css/main.083200ef.css",
+    "main.js": "/odin-where-is-waldo/static/js/main.18368787.js",
+    "index.html": "/odin-where-is-waldo/index.html",
+    "main.083200ef.css.map": "/odin-where-is-waldo/static/css/main.083200ef.css.map",
+    "main.18368787.js.map": "/odin-where-is-waldo/static/js/main.18368787.js.map"
   },
   "entrypoints": [
     "static/css/main.083200ef.css",
-    "static/js/main.ef5e54dc.js"
+    "static/js/main.18368787.js"
   ]
 }
